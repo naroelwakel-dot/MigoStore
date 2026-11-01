@@ -5,7 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>متجر Migo AI Solution</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<style>
+<meta name="description" content="متجر Migo AI Solution: اشترِ شحن الألعاب، الاشتراكات، أدوات الذكاء الاصطناعي، خدمات السوشيال ميديا وبطاقات VCC. أسعار بالجنيه المصري وتسليم فوري، اطلب عبر واتساب.">
+<link rel="canonical" href="https://naroelwakel-dot.github.io/MigoStore/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="متجر Migo AI Solution">
+<meta property="og:title" content="متجر Migo AI Solution — شحن ألعاب واشتراكات وتسليم فوري">
+<meta property="og:description" content="شحن الألعاب والاشتراكات وأدوات الذكاء الاصطناعي بأسعار منافسة بالجنيه المصري مع تسليم فوري.">
+<meta property="og:url" content="https://naroelwakel-dot.github.io/MigoStore/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f1319">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Store", "name": "متجر Migo AI Solution", "url": "https://naroelwakel-dot.github.io/MigoStore/", "description": "متجر رقمي لشحن الألعاب والاشتراكات وأدوات الذكاء الاصطناعي وخدمات السوشيال ميديا وبطاقات VCC.", "currenciesAccepted": "EGP", "areaServed": "EG", "contactPoint": {"@type": "ContactPoint", "telephone": "+201060934020", "contactType": "customer service"}}</script><style>
   body{background:#0f1319;color:#e6ebf2;font-family:system-ui,"Segoe UI",Tahoma,sans-serif}
   .card{background:#171c24;border:1px solid rgba(255,255,255,.08)}
   .chip{border:1px solid rgba(255,255,255,.12)}
@@ -20,7 +29,7 @@
     <div class="w-9 h-9 rounded-xl bg-green-500/15 text-green-400 flex items-center justify-center text-lg">🛍️</div>
     <div class="flex-1">
       <h1 class="font-bold leading-5">متجر Migo AI Solution</h1>
-      <p class="text-[11px] text-slate-400">الأسعار بالجنيه المصري · تسليم فوري</p>
+      <p class="text-[11px] text-slate-400">الأسعار بالجنيه المصري · تسليم فوري · <a class="text-green-400 underline" href="products.html">كل المنتجات</a></p>
     </div>
   </div>
   <div class="max-w-5xl mx-auto px-4 pb-2">
@@ -49,7 +58,7 @@ function cardHTML(cat,it){
   const img=it.img?`<img src="${esc(imgSrc(it.img))}" alt="${esc(it.name)}" loading="lazy" class="w-full h-32 object-cover rounded-xl mb-3 bg-black/30" onerror="this.style.display='none'">`:'';
   return `<div class="card rounded-2xl p-4 flex flex-col">
     ${img}
-    <h3 class="font-semibold">${esc(it.name)}</h3>
+    <h3 class="font-semibold"><a class="hover:text-green-400" href="p/${esc(it.id)}/">${esc(it.name)}</a></h3>
     <p class="text-[11px] text-slate-500 mb-2">للطلب ابعتها: ${esc(it.ask)}</p>
     <ul class="mb-3">${pk||'<li class="text-slate-500 text-sm">حسب الطلب</li>'}</ul>
     <a class="mt-auto inline-flex items-center justify-center gap-2 bg-green-500 text-[#06210f] font-bold rounded-xl px-3 py-2 text-sm" href="${waLink(cat.name,it)}" target="_blank" rel="noopener">اطلب واتساب 💬</a>
