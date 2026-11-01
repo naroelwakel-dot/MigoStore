@@ -18,10 +18,14 @@
 <header class="sticky top-0 z-20 bg-[#10151c]/95 backdrop-blur border-b border-white/10">
   <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
     <div class="w-9 h-9 rounded-xl bg-green-500/15 text-green-400 flex items-center justify-center text-lg">🛍️</div>
-    <div>
+    <div class="flex-1">
       <h1 class="font-bold leading-5">متجر Migo AI Solution</h1>
       <p class="text-[11px] text-slate-400">الأسعار بالجنيه المصري · تسليم فوري</p>
     </div>
+  </div>
+  <div class="max-w-5xl mx-auto px-4 pb-2">
+    <input id="q" type="search" placeholder="ابحث عن منتج… (مثال: ببجي، Canva، تيك توك)"
+      class="w-full bg-[#0b0f14] border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-green-500/60">
   </div>
   <div id="tabs" class="max-w-5xl mx-auto px-4 pb-3 flex gap-2 overflow-x-auto"></div>
 </header>
@@ -30,27 +34,40 @@
   <div id="grid" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
 </main>
 <script>
-let CATS=[], cur=null;
+const WA='201060934020';
+let CATS=[], cur=null, q='';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const waLink=(cat,it)=>{const msg=`طلب: ${it.name}\nالقسم: ${cat}\nمن متجر Migo AI Solution`;return `https://wa.me/${WA}?text=${encodeURIComponent(msg)}`};
 function tabs(){
-  $('#tabs').innerHTML=CATS.map(c=>`<button class="chip ${c.key===cur?'active':'text-slate-300'} whitespace-nowrap px-3 py-1.5 rounded-full text-sm" data-k="${c.key}">${esc(c.name)}</button>`).join('');
-  $('#tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{cur=b.dataset.k;render()});
+  $('#tabs').innerHTML=CATS.map(c=>`<button class="chip ${c.key===cur&&!q?'active':'text-slate-300'} whitespace-nowrap px-3 py-1.5 rounded-full text-sm" data-k="${c.key}">${esc(c.name)}</button>`).join('');
+  $('#tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{q='';$('#q').value='';cur=b.dataset.k;render()});
+}
+function cardHTML(cat,it){
+  const pk=(it.pk||[]).map(p=>`<li class="flex justify-between gap-3 py-1 border-b border-white/5 last:border-0"><span class="text-slate-300 text-[13px]">${esc(p[0])}</span><span class="price text-[13px] font-semibold whitespace-nowrap">${esc(p[1])}</span></li>`).join('');
+  return `<div class="card rounded-2xl p-4 flex flex-col">
+    <h3 class="font-semibold">${esc(it.name)}</h3>
+    <p class="text-[11px] text-slate-500 mb-2">للطلب ابعتها: ${esc(it.ask)}</p>
+    <ul class="mb-3">${pk||'<li class="text-slate-500 text-sm">حسب الطلب</li>'}</ul>
+    <a class="mt-auto inline-flex items-center justify-center gap-2 bg-green-500 text-[#06210f] font-bold rounded-xl px-3 py-2 text-sm" href="${waLink(cat.name,it)}" target="_blank" rel="noopener">اطلب واتساب 💬</a>
+  </div>`;
 }
 function render(){
-  const c=CATS.find(x=>x.key===cur)||CATS[0];
   tabs();
+  if(q){
+    const needle=q.trim().toLowerCase();
+    const hits=[];
+    CATS.forEach(c=>c.items.forEach(it=>{ if(it.name.toLowerCase().includes(needle)) hits.push(cardHTML(c,it)); }));
+    $('#status').textContent = hits.length? '' : 'مفيش نتائج بالاسم ده.';
+    $('#grid').innerHTML=hits.join('');
+    return;
+  }
+  const c=CATS.find(x=>x.key===cur)||CATS[0];
   if(!c){$('#status').textContent='لا توجد أقسام.';return}
   $('#status').textContent='';
-  $('#grid').innerHTML=c.items.map(it=>{
-    const pk=(it.pk||[]).map(p=>`<li class="flex justify-between gap-2 py-1 border-b border-white/5 last:border-0"><span class="text-slate-300 text-[13px]">${esc(p[0])}</span><span class="price text-[13px] font-semibold whitespace-nowrap">${esc(p[1])}</span></li>`).join('');
-    return `<div class="card rounded-2xl p-4">
-      <h3 class="font-semibold mb-1">${esc(it.name)}</h3>
-      <p class="text-[11px] text-slate-500 mb-2">للطلب ابعتها: ${esc(it.ask)}</p>
-      <ul>${pk||'<li class="text-slate-500 text-sm">حسب الطلب</li>'}</ul>
-    </div>`;
-  }).join('');
+  $('#grid').innerHTML=c.items.map(it=>cardHTML(c,it)).join('');
 }
+$('#q').addEventListener('input',e=>{q=e.target.value;render()});
 fetch('catalog.json?v='+Date.now()).then(r=>r.json()).then(d=>{
   CATS=d.categories||[];
   if(!CATS.length)throw new Error('empty');
