@@ -35,7 +35,8 @@
 </main>
 <script>
 const WA='201060934020';
-let CATS=[], cur=null, q='';
+let CATS=[], cur=null, q='', IMGBASE='';
+const imgSrc=s=>!s?'':(/^https?:/.test(s)?s:IMGBASE+s);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const waLink=(cat,it)=>{const msg=`طلب: ${it.name}\nالقسم: ${cat}\nمن متجر Migo AI Solution`;return `https://wa.me/${WA}?text=${encodeURIComponent(msg)}`};
@@ -45,7 +46,7 @@ function tabs(){
 }
 function cardHTML(cat,it){
   const pk=(it.pk||[]).map(p=>`<li class="flex justify-between gap-3 py-1 border-b border-white/5 last:border-0"><span class="text-slate-300 text-[13px]">${esc(p[0])}</span><span class="price text-[13px] font-semibold whitespace-nowrap">${esc(p[1])}</span></li>`).join('');
-  const img=it.img?`<img src="${esc(it.img)}" alt="${esc(it.name)}" loading="lazy" class="w-full h-32 object-cover rounded-xl mb-3 bg-black/30" onerror="this.style.display='none'">`:'';
+  const img=it.img?`<img src="${esc(imgSrc(it.img))}" alt="${esc(it.name)}" loading="lazy" class="w-full h-32 object-cover rounded-xl mb-3 bg-black/30" onerror="this.style.display='none'">`:'';
   return `<div class="card rounded-2xl p-4 flex flex-col">
     ${img}
     <h3 class="font-semibold">${esc(it.name)}</h3>
@@ -72,6 +73,7 @@ function render(){
 $('#q').addEventListener('input',e=>{q=e.target.value;render()});
 fetch('catalog.json?v='+Date.now()).then(r=>r.json()).then(d=>{
   CATS=d.categories||[];
+  IMGBASE=d.imgBase||'';
   if(!CATS.length)throw new Error('empty');
   cur=CATS[0].key;render();
 }).catch(()=>{$('#status').textContent='تعذّر تحميل المنتجات، جرّب تحديث الصفحة.'});
