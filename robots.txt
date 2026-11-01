@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://naroelwakel-dot.github.io/MigoStore/sitemap.xml
